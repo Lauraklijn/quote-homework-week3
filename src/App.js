@@ -8,7 +8,6 @@ function App() {
     <div className="App">
       <header className="App-header">
         <main>
-          <h1>Quotes</h1>
           <QuoteSearcher />
         </main>
       </header>
