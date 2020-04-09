@@ -1,68 +1,143 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Step 1. Setting up
 
-## Available Scripts
+•	Create a React app with `create-react-app`. Clean up `App.js` by removing everything inside the `<div className="App">` element.
 
-In the project directory, you can run:
 
-### `npm start`
+### Step 2. Adding some components
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+In the next steps, we're going to be fetching our quotes from the [Quote Garden API](https://pprathameshmore.github.io/QuoteGarden/). But first, let's "hard-code" some of these quotes into the app.
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+•	Create a component `QuoteSearcher`, and put some hard-coded quote data in its initial state, like so:
+  ```js
+  state = {
+    quotes: [
+      {
+        "_id": "5d91b45d9980192a317c8acc",
+        "quoteText": "Notice that the stiffest tree is most easily cracked, while the bamboo or willow survives by bending with the wind.",
+        "quoteAuthor": "Bruce Lee"
+      },
+      {
+        "_id": "5d91b45d9980192a317c8abe",
+        "quoteText": "Give me six hours to chop down a tree and I will spend the first four sharpening the axe.",
+        "quoteAuthor": "Abraham Lincoln"
+      },
+      {
+        "_id": "5d91b45d9980192a317c8955",
+        "quoteText": "Good timber does not grow with ease; the stronger the wind, the stronger the trees.",
+        "quoteAuthor": "J. Willard Marriott"
+      },  ] }
+  ```
+  Compose a `QuoteSearcher` instance in the `App` component, so that we can look at it.
+•	Create a component `Quote`, that takes two props (the quote text and the quote author), and displays them. Show the quote first, and then the author, prepended by _"By:"_.
+•	Let the `QuoteSearcher` component map over the quotes in its state, and display each of them with the `Quote` component. Also, add a page title above this list. The result may look something like this (the choice of title and your styling does not matter):
 
-### `npm test`
+  ![](https://p18.f3.n0.cdn.getcloudapp.com/items/bLupkln5/Image+2019-10-24+at+9.53.06+PM.png)
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Step 3. Fetching quotes from the API
 
-### `npm run build`
+Now, let's make the `QuoteSearcher` component dynamically fetch qutoes from the API. We will be using the "search" endpoint at `https://quote-garden.herokuapp.com/quotes/search/:keyword`. For example, here are the results for "tree": https://quote-garden.herokuapp.com/quotes/search/tree.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+•	Change the initial state of the `QuoteSearcher` component to have an empty list of quotes. That is,
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+  ```ts
+  state = {
+    quotes: []
+  }
+  ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+•	Add the `componentDidMount` lifecycle method to the component, and in it add a `fetch` call to https://quote-garden.herokuapp.com/quotes/search/tree, to fetch all the quotes that contain the keyword "tree".
+•	When the data arrives, assign it (correctly) to component local state, so that the component automatically rerenders and displays all the found qoutes.
+•	Add an extra (boolean) state property called `fetching`, and (re-)assign it as necessary in `componentDidMount` so that the component knows when it is fetching data.
+•	In the `render()` method, use that state property to conditionally show a "Loading..." text instead of the quotes when fetching. The result may look something like this:
 
-### `npm run eject`
+  ![](https://p18.f3.n0.cdn.getcloudapp.com/items/d5ubADlJ/Screen+Recording+2019-10-24+at+09.57+PM.gif)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+ 
+### Step 4. Add a "like" / "dislike" feature to the quotes
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+You might like some quotes and dislike others. We're going to add a feature that records whether you do or do not. For this step, we've going to keep the state local to the `Quote` component.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+•	Add two `<button>`s, for example `:)` and `:(` or `like` and `dislike`, so that the page looks like this:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+  ![](https://p18.f3.n0.cdn.getcloudapp.com/items/04uk2vJO/Image+2019-10-24+at+10.04.48+PM.png)
 
-## Learn More
+•	By using a new property in component local state, and the `onClick` attribute of the buttons, make it so that a user can like or dislike a quote. This liking or disliking should change the way the quote looks. For example, you can use the `style` attribute, and conditionally apply some CSS styles, like so: `style={{ fontWeight: "bold" }}`. - Heb likes en dislikes aantal gegeven
+•	The result may look something like this:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  ![](https://p18.f3.n0.cdn.getcloudapp.com/items/wbue6LqB/Screen+Recording+2019-10-24+at+10.12+PM.gif)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Step 5. Counting liked and disliked quotes
 
-### Code Splitting
+We want to count the number of quotes the user has liked and disliked. We want this to look something like this:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+![](https://p18.f3.n0.cdn.getcloudapp.com/items/GGu0WyQo/Screen+Recording+2019-10-24+at+10.28+PM.gif)
 
-### Analyzing the Bundle Size
+This is not the easiest task, we'll need to "lift the likedness state up" to the `QuoteSearcher` component.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+•	The initial state property you used in the `Quote` component now has to be added to the quote object itself, after the quotes have been fetched, in `QuoteSearcher`. For example, by mapping over the fetch results, like so:
 
-### Making a Progressive Web App
+  ```ts
+  data.results.map(quote => {
+    return {
+      ...quote,
+      // your "likedness" property
+    };
+  })
+  ```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+•	In the `render()` method of the `QuoteSearcher` component, calculate the total number of liked and disliked quotes. You probably want to use `filter` or `map` or `reduce` for this. Then, display these number at the top of the page. (See the example above.)
 
-### Advanced Configuration
+•	Pass down extra props to the `Quote` components from the `QuoteSearcher` component: pass the `_id` of the quote, and your "likedness" property as well. This way, the `Quote` component knows "which quote it is" (with the `_id`), and whether it has been liked.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+•	Next, add a method `setLiked` to your `QuoteSearcher` component, and pass it down to the `Quote` components as a _callback prop_. For example, our example solution has a method like so:
 
-### Deployment
+  ```ts
+  setLiked = (id, liked) => {
+    console.log("hello!", id, liked);
+    // update local state so that the
+    //  quote with this id is liked
+    //  or not liked
+  }
+  ```
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+  You're allowed to name the method differently, or add multiple methods, or pass different parameters. What matters is that the feature works, not exactly how you achieve this :)
 
-### `npm run build` fails to minify
+  Also, it's often good to wait with implementing this kind of method until we can test it.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+•	Update your `Quote` component so that it uses the new props it gets to style it according to whether it is liked or not.
+
+•	Update your `Quote` component so that it calls the callback prop (and passes it the right parameter(s)) when the buttons are clicked.
+
+•	Now, implement your `setLiked` (or differently named) method(s), so that they update the local state of the `QuoteSearcher` component in the right way. (Setting the "likedness" property of the right quote.)
+
+
+
+ 
+### Step 6. Searching for quotes
+
+We're going to add a new feature: you can look for quotes by entering a keyword into an `<input />` field. This input field is going to be a "controlled component". It can be helpful to refer to the [React docs page]St on this subject.
+
+•	Add an input field to the top of the page. The input field will be a "controlled" component, which means that it reads its `value` from a property of component local state, and has an event listener attached to `onChange` that update that state property.
+
+•	Refactor the component so that the `fetch`ing logic which is in the `componentDidMount` method, is placed into a new method, for example called `search`. Also, make sure it uses the new state property for the search text instead of just "tree".
+
+•	Add a button with the text "Search!" right next to the input field. When the user clicks on the button, a new search should be performed.
+
+•	Make sure that the "Loading..." indicator works properly. It should show up every time a search is performed, but of course only while the search is being done, and afterwards not any more.
+
+•	The result may look something like this:
+
+  ![](https://p18.f3.n0.cdn.getcloudapp.com/items/YEuvZJ04/Screen+Recording+2019-10-24+at+11.01+PM.gif)
+
+### Step 7. Bonus / reparation points
+
+We will primarily be grading your homework based on the previous steps, and according to the list of learning goals, above. However, you can make up for some shortcomings in these steps and/or score some bonus points by implementing one or more of the following feature-ideas. Some are easier, some are harder, but in no particular order:
+
+1. The Quotes API tends to contains lots of duplicate quotes! Filter out these duplicate quotes for a better user experience.
+
+2. Show a nice "error" message when no quotes can be found for some searched keyword.
+
+3. Being able to add a new quote to the list. You can ask for a text + author, or just the text and then hard-code the author to be you!
+
+4. At the top of the page, count the number of quotes and the number of distinct authors in the list of found quotes. There may be many quotes, but just a few authors they can be attributes to.
+
